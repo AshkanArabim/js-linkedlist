@@ -2,7 +2,8 @@ import { nodeFactory } from "./linkedlist";
 import { listFactory } from "./linkedlist";
 
 // create node
-// const node1 = nodeFactory('1',)
+const node1 = nodeFactory('1');
+console.log(node1)
 
 // create list
 // add
