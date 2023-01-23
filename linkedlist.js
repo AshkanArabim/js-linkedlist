@@ -1,4 +1,5 @@
-function nodeFactory(data, next) {
+function nodeFactory(data) {
+  let next = null;
   function getData() {
     return data;
   }
@@ -111,8 +112,9 @@ function listFactory() {
       temp = temp.next;
     }
     // create a new node with value and the previous next, then assign that node to the current index's next
-    // yes, sounds confusing.
-    temp.next = nodeFactory(value, temp.next);
+    newNodeNext = temp.next;
+    temp.next = nodeFactory(value);
+    nodeFactory.setNext(newNodeNext);
   }
 
   function removeAt(index) {
@@ -145,3 +147,5 @@ function listFactory() {
     pop,
   };
 }
+
+module.exports = {nodeFactory, listFactory};
