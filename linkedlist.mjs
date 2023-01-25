@@ -1,21 +1,6 @@
-function nodeFactory(data) {
-  let next = null;
-  function getData() {
-    return data;
-  }
-  function getNext() {
-    return next;
-  }
-  function setData(newVal) {
-    data = newVal;
-  }
-  function setNext(newNode) {
-    next = newNode;
-  }
-  return { getData, getNext, setData, setNext };
-}
+import nodeFactory from "./node.mjs";
 
-function listFactory() {
+export default function listFactory() {
   let head = null;
 
   function append(node) {
@@ -25,25 +10,25 @@ function listFactory() {
       head = node;
     } else {
       // if not, go till the end
-      while (node.next !== null) {
-        temp = temp.next;
+      while (temp.getNext() !== null) {
+        temp = temp.getNext();
       }
-      temp.next = node;
+      temp.setNext(node);
     }
   }
 
   function prepend(node) {
     let temp = head;
-    // add to head, move old head (temp) to node.next
+    // add to head, move old head (temp) to node.getNext()
     head = node;
-    node.next = temp;
+    node.setNext(temp);
   }
 
   function size() {
     let temp = head;
     let count = 0;
     while (temp !== null) {
-      temp = temp.next;
+      temp = temp.getNext();
       count++;
     }
     return count;
@@ -57,16 +42,16 @@ function listFactory() {
   // renamed to match with getHead()
   function getTail() {
     let temp = head;
-    while (temp.next !== null) {
-      temp = temp.next;
+    while (temp.getNext() !== null) {
+      temp = temp.getNext();
     }
     return temp;
   }
 
   function at(index) {
     let temp = head;
-    for (let i; i < index; i++) {
-      temp = temp.next;
+    for (let i = 0; i < index; i++) {
+      temp = temp.getNext();
     }
     return temp;
   }
@@ -77,7 +62,7 @@ function listFactory() {
       if (temp.getData() === val) {
         return true;
       }
-      temp = temp.next;
+      temp = temp.getNext();
     }
     return false;
   }
@@ -90,7 +75,7 @@ function listFactory() {
         return count;
       }
       count++;
-      temp = temp.next;
+      temp = temp.getNext();
     }
     return -1;
   }
@@ -98,37 +83,46 @@ function listFactory() {
   function toString() {
     let result = "[ ";
     let temp = head;
-    while (temp !== null) {
+    while (temp.getNext() !== null) {
       result += `'${temp.getData()}', `;
-      temp = temp.next;
+      temp = temp.getNext();
     }
+    result += `'${temp.getData()}' `;
     result += "]";
+    return result;
   }
 
   function insertAt(index, value) {
+    // if index is more than the length of the list
+    // throw an error
+    if (index > this.size()) {
+      console.log(`index ${index} is out of range!!`);
+    }
+
     let temp = head;
     // traverse, but stop one before the index
     for (let i = 0; i < index - 1; i++) {
-      temp = temp.next;
+      temp = temp.getNext();
     }
     // create a new node with value and the previous next, then assign that node to the current index's next
-    newNodeNext = temp.next;
-    temp.next = nodeFactory(value);
-    nodeFactory.setNext(newNodeNext);
+    let newNodeNext = temp.getNext();
+    const newNode = nodeFactory(value);
+    temp.setNext(newNode);
+    newNode.setNext(newNodeNext);
   }
 
   function removeAt(index) {
     let temp = head;
     for (let i = 0; i < index - 1; i++) {
-      temp = temp.next;
+      temp = temp.getNext();
     }
-    temp.next = temp.next.next;
+    temp.setNext(temp.getNext().getNext());
   }
 
   function pop() {
     const len = this.size();
-    const result = at(len);
-    removeAt(len);
+    const result = at(len - 1);
+    removeAt(len - 1);
     return result;
   }
 
@@ -147,5 +141,3 @@ function listFactory() {
     pop,
   };
 }
-
-module.exports = {nodeFactory, listFactory};
