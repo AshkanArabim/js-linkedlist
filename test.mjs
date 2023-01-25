@@ -59,7 +59,8 @@ list1.insertAt(1, "LOREM");
 list1.insertAt(4, "bro");
 
 // removeat
-
+console.log('remove at');
+list1.removeAt(2);
 
 // tostring
 console.log("list items: ");
